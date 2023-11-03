@@ -16,14 +16,6 @@ const getContacts = () => {
         if (payload.usernames.length) {
             subFriendStatus(payload)
         }
-        const conversationList = []
-        res.data.forEach(item => {
-            conversationList.push({
-                id: item,
-                type: 'singleChat'
-            })
-        })
-        getSilentModeForConversations({ conversationList })
         store.dispatch(contactsAction(res.data))
         store.dispatch(searchLoadAction(false))
     });

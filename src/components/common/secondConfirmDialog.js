@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CommonDialog from "./dialog";
-import i18next, { use } from "i18next";
+import i18next from "i18next";
 
 const useStyles = makeStyles((theme) => {
   return {

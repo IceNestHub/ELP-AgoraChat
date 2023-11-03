@@ -5,9 +5,8 @@ import getPublicGroups from '../api/groupChat/getPublicGroups'
 import { getSilentModeForAll } from '../api/notificationPush'
 import store from '../redux/store'
 import { setRequests, setFetchingStatus, presenceStatusImg, setPresenceList, setUnread } from '../redux/actions'
-import { getToken } from '../utils/http-client'
+import { getToken } from './http-client'
 import { agreeInviteGroup } from '../api/groupChat/addGroup'
-import getSessions from "../api/sessionsChat/getSessions";
 import { getGroupMuted } from "../api/groupChat/groupMute";
 import { getGroupWrite } from "../api/groupChat/groupWhite";
 import getGroupInfo from '../api/groupChat/getGroupInfo'
@@ -153,7 +152,6 @@ const initListen = () => {
         onOpened: () => {
             getSilentModeForAll().finally(res => {
                 getContacts();
-                getSessions();
             })
             getPublicGroups();
             getBlackList()
