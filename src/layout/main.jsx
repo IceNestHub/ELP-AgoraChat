@@ -53,6 +53,8 @@ export default function Main(props) {
 
     }, [uid]);
 
+
+
     const [sessionInfoAddEl, setSessionInfoAddEl] = useState(null)
     const [sessionInfo, setSessionInfo] = useState({});
 
@@ -61,7 +63,7 @@ export default function Main(props) {
     const [presenceList, setPresenceList] = useState([])
     const [groupSettingAddEl, setGroupSettingAddEl] = useState(null)
     const [currentGroupId, setCurrentGroupId] = useState("");
-    
+
     // session avatar click
     const handleClickSessionInfoDialog = (e,res) => {
         let {chatType,to} = res

@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { MenuItem, Select, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
+import React, {useCallback, useEffect, useState} from "react";
+import { RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import i18next from "i18next";
-import { handlerTime, getMillisecond, computedItervalTime, timeIntervalToMinutesOrHours, setTimeVSNowTime } from '../../../../../utils/notification'
-import { setSilentModeForConversation, getSilentModeForConversation, getSilentModeForConversations } from '../../../../../api/notificationPush'
+import { handlerTime, getMillisecond, setTimeVSNowTime } from '../../../../../utils/notification'
+import { setSilentModeForConversation, getSilentModeForConversation } from '../../../../../api/notificationPush'
 import muteIcon from '../../../../../assets/go@2x.png'
 import CommonDialog from "../../../../common/dialog";
 import checkgrayIcon from '../../../../../assets/check_gray.png'
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
   return {
     root: {
       width: '540px',
@@ -271,7 +270,7 @@ const Notifications = (props) => {
   const [showSelectOption, setShowSelectOption] = useState(false)
   const [turnOffBtnFlag, setTurnOffBtnFlag] = useState(false)
 
-  const getNotDisturbGroup = (groupId) => {
+  const getNotDisturbGroup = useCallback((groupId) => {
     console.log(groupId, 'groupId=conversationId')
     getSilentModeForConversation({conversationId: groupId, type: useScene, flag: useComponent }).then(res => {
       console.log(res, 'getNotDisturbDuration')
@@ -308,24 +307,14 @@ const Notifications = (props) => {
       } else {
         setShowRadio(true)
       }
-      // if (res.ignoreInterval) {
-      //   setDefaultValue(radioList[timeIntervalToMinutesOrHours(res.ignoreInterval)].value)
-      //   setTurnOffBtnFlag(true)
-      //   showMuteImgOrNot(true)
-      // }
-      // if (res.ignoreInterval && res.ignoreDuration) {
-      //   setCheckedDefaultValue(res.ignoreDuration, timeIntervalToMinutesOrHours(res.ignoreInterval), true)
-      //   showMuteImgOrNot(true)
-      // } else {
-      //   showMuteImgOrNot(false)
-      // }
     })
-  }
+  },[showMuteImgOrNot, useComponent, useScene])
+  
   useEffect(() => {
       if (props.groupId) {
         getNotDisturbGroup(props.groupId)
       }
-  }, [props.groupId])
+  }, [getNotDisturbGroup, props.groupId])
   const handleSelectChange = (item) => {
     const value = item.value
     selectList.forEach(item => {

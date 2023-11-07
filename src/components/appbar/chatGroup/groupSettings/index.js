@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import CommonDialog from "../../../common/dialog";
-import i18next, { use } from "i18next";
+import i18next from "i18next";
 import {
 	Box,Tabs,Tab,Button,Popover
 } from "@material-ui/core";
@@ -13,7 +13,6 @@ import { TabPanel, a11yProps } from "../../../common/tabs";
 import Members from "./members";
 import AddMembers from "./addMembers";
 import GroupNotice from './notice'
-// import GroupFiles from "./files";
 import GroupChatInfo from "./info";
 import TransFerOwner from "./transfer";
 import Notifications from './members/notifications'
@@ -23,20 +22,16 @@ import groupAvatar from "../../../../assets/groupAvatar.png";
 import membersIcon from "../../../../assets/members@2x.png";
 import addMembersIcon from "../../../../assets/addcontact@2x.png";
 import noticeIcon from "../../../../assets/notice@2x.png";
-import filesIcon from "../../../../assets/files@2x.png";
 import editIcon from "../../../../assets/edit@2x.png";
-import allowSearchIcon from "../../../../assets/allow_search@2x.png";
 import transferIcon from "../../../../assets/transfer@2x.png";
 import deleteIcon from "../../../../assets/red@2x.png";
 import muteIcon from '../../../../assets/unmute.png'
 import muteGrayIcon from '../../../../assets/gray@2x.png'
-import { setTimeVSNowTime } from '../../../../utils/notification'
-import { getSilentModeForConversation } from '../../../../api/notificationPush'
 
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
 	return {
 		root: {
 			width: "880px",
@@ -172,12 +167,9 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 	const loginUser = WebIM.conn.context?.userId;
 	const isOwner = loginUser === groupsInfo?.owner;
 	const groupId = groupsInfo?.id
-	const groupName = groupsInfo?.name
 	const [value, setValue] = useState(0);
 	const [muteFlag, setmuteFlag] = useState(false);
-	const [secondSure, setSecondSure] = useState(false)
-	const [GroupStatus, setGroupStatus] = useState('')
-	const [groupContent, setgroupContent] = useState('')
+
 	const [btnWord, setBtnWord] = useState('')
 
 	const handleChange = (event, newValue) => {
@@ -254,34 +246,7 @@ const GroupSettingsDialog = ({ open, onClose, currentGroupId, authorEl }) => {
 				</Button>
 			);
 		};
-		const groupFileLabel = () => {
-			return (
-				<Button className={classes.membersBox}>
-					<img
-						src={filesIcon}
-						alt="files"
-						className={classes.iconStyle}
-					></img>
-					<Typography className={classes.menus}>
-						Group File
-					</Typography>
-				</Button>
-			);
-		};
-		// const groupFileLabel = () => {
-		// 	return (
-		// 		<Button className={classes.membersBox}>
-		// 			<img
-		// 				src={filesIcon}
-		// 				alt="files"
-		// 				className={classes.iconStyle}
-		// 			></img>
-		// 			<Typography className={classes.menus}>
-		// 				Group File
-		// 			</Typography>
-		// 		</Button>
-		// 	);
-		// };
+
 		const groupInfoLabel = () => {
 			return (
 				<Button className={classes.membersBox}>

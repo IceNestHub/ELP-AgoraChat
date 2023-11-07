@@ -9,12 +9,29 @@ import GlobalPropsActions from "agora-chat-uikit/es/redux/globalProps";
 import {getUsersByIds} from "./http-client";
 import store from "../redux/store";
 import {setFullNameMap} from "../redux/actions";
+import {getSilentModeForConversations} from "../api/notificationPush";
+
+const ADMIN_CONVERSATION = {
+    sessionId:  'admin',
+    sessionType: 'singleChat',
+    name: 'admin'
+}
 
 const WebIM = EaseApp.getSdk({
     appkey: `${process.env.AGORA_CHAT_ORG_NAME}#${process.env.AGORA_CHAT_APP_NAME}`,
     successLoginCallback: async function() {
         const urlParams = new URLSearchParams(document.location.search);
         const conversationId = urlParams.get('conversationId');
+
+
+        const { messages: amdinMessages } = await WebIM.conn.getHistoryMessages({
+            targetId: ADMIN_CONVERSATION.sessionId,
+            cursor: -1,
+            pageSize: 23,
+            chatType: ADMIN_CONVERSATION.sessionType,
+            searchDirection: "up"
+        });
+
         const {data: contactIds} = await WebIM.conn.getContacts();
         const users = await getUsersByIds(contactIds);
 
@@ -34,8 +51,11 @@ const WebIM = EaseApp.getSdk({
 
         store.dispatch(setFullNameMap(fullNameByIdMap));
 
-        uikit_store.dispatch(SessionActions.setSessionList(conversations));
+        if (amdinMessages.length) {
+            conversations.push(ADMIN_CONVERSATION)
+        }
 
+        uikit_store.dispatch(SessionActions.setSessionList(conversations));
         if (conversationId && contactIds.includes(conversationId)) {
             const session = conversations.find(conversation => conversation.sessionId === conversationId);
             uikit_store.dispatch(
@@ -46,12 +66,22 @@ const WebIM = EaseApp.getSdk({
                 })
             );
             uikit_store.dispatch(
-                MessageActions.fetchMessage(conversationId, session.sessionType)
-            );
-            uikit_store.dispatch(
                 SessionActions.setCurrentSession(conversationId)
             )
         }
+        conversations.forEach(conversation =>
+            uikit_store.dispatch(
+                MessageActions.fetchMessage(conversation.sessionId, conversation.sessionType)
+            )
+        );
+
+        const listForSilentMode = conversations.map(conversation => ({
+           id: conversation.sessionId,
+           type: conversation.sessionType
+        }))
+
+        await getSilentModeForConversations({ conversationList: listForSilentMode })
+
     }
 })
 EaseApp.thread.setHasThreadEditPanel(true)
